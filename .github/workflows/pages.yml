@@ -1,0 +1,62 @@
+name: Publish MagicTrick to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out public gallery
+        uses: actions/checkout@v6
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Configure Picture Prediction
+        env:
+          PICTURE_API_BASE: ${{ vars.PICTURE_API_BASE }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          const value = process.env.PICTURE_API_BASE?.trim();
+          let apiBase = '';
+          if (value) {
+            const endpoint = new URL(value);
+            if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password || endpoint.pathname !== '/' || endpoint.search || endpoint.hash) {
+              throw new Error('PICTURE_API_BASE must be a bare HTTPS origin.');
+            }
+            apiBase = endpoint.origin;
+          }
+          writeFileSync('site/picture-prediction/config.js', `export const apiBase = ${JSON.stringify(apiBase)};\n`);
+          NODE
+          node --input-type=module --check < site/picture-prediction/gallery.js
+          test -s site/picture-prediction/assets/portrait.jpg
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

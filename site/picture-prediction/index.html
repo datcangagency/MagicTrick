@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#101211">
+  <title>Bức ảnh</title>
+  <link rel="stylesheet" href="./gallery.css">
+  <script type="module" src="./gallery.js"></script>
+</head>
+<body>
+  <main class="gallery">
+    <h1>Bức ảnh</h1>
+    <div id="frame" class="frame">
+      <div id="picture" class="picture">
+        <img id="portrait" class="portrait" src="./assets/portrait.jpg" alt="Chân dung một người phụ nữ nhìn thẳng, ánh sáng vàng phản chiếu trong mắt" draggable="false" fetchpriority="high" width="1024" height="1536">
+        <img class="detail detail-left" alt="" draggable="false" hidden>
+        <img class="detail detail-right" alt="" draggable="false" hidden>
+      </div>
+    </div>
+    <div class="controls" aria-label="Điều khiển ảnh">
+      <button type="button" id="zoom-in">Phóng to</button>
+      <button type="button" id="reset" disabled>Thu nhỏ</button>
+    </div>
+    <p id="status" class="status" role="status" hidden></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,28 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  color: #efe8db;
+  background: #101211;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; background: radial-gradient(ellipse at 50% 25%, #25231e, #101211 72%); }
+button { font: inherit; }
+[hidden] { display: none !important; }
+
+.gallery { width: min(calc(100% - 32px), 410px, calc((100svh - 133px) * 0.667)); min-width: min(280px, calc(100% - 32px)); margin: auto; padding: 20px 0 12px; }
+h1 { font: 400 clamp(1.75rem, 5vw, 2.1rem)/1.1 Georgia, serif; letter-spacing: -.03em; margin: 0 0 15px; }
+.frame { position: relative; overflow: hidden; aspect-ratio: 2/3; touch-action: none; background: #28211a; border-radius: 3px; outline: 1px solid #72594166; user-select: none; }
+.picture { position: absolute; inset: 0; transform-origin: 0 0; pointer-events: none; }
+.portrait { display: block; width: 100%; height: 100%; object-fit: contain; }
+.detail { position: absolute; top: 32.45%; width: 3.3%; transform: translate(-50%, -50%) perspective(110px) rotate(-12deg) rotateY(-16deg) skewY(6deg); opacity: 0; filter: saturate(.72) blur(.14px); transition: opacity 130ms linear; }
+.detail-left { left: 25.7%; }
+.detail-right { left: 74.2%; }
+.picture.is-zoomed .detail { opacity: .78; }
+.controls { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.controls button { min-height: 42px; border: 1px solid #685c4a; border-radius: 3px; background: #25221e; color: inherit; padding: 6px 14px; cursor: pointer; }
+.controls button:disabled { opacity: .48; cursor: default; }
+.controls button:focus-visible { outline: 2px solid #d8a873; outline-offset: 3px; }
+.status { margin: 8px 0 0; font-size: .9rem; color: #f8d4a4; }
+@media (prefers-reduced-motion: reduce) { .detail { transition: none; } }
