@@ -94,6 +94,55 @@ zoomIn.addEventListener('click', () => zoomAt());
 reset.addEventListener('click', () => paint(1, 0, 0));
 new ResizeObserver(() => paint(1, 0, 0)).observe(frame);
 
+function enableStudioShortcut() {
+  const inCorner = ({ clientX, clientY }) => clientX >= 0 && clientX < 112 && clientY >= 0 && clientY < 112;
+  let press = null;
+  let taps = 0;
+  let firstTap = 0;
+
+  function clearTaps() {
+    press = null;
+    taps = 0;
+  }
+
+  document.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0 || !inCorner(event)) {
+      clearTaps();
+      return;
+    }
+    press = { id: event.pointerId, x: event.clientX, y: event.clientY, start: event.timeStamp };
+  }, true);
+
+  document.addEventListener('pointermove', event => {
+    if (press?.id === event.pointerId && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 12) {
+      clearTaps();
+    }
+  }, true);
+
+  document.addEventListener('pointercancel', clearTaps, true);
+  document.addEventListener('pointerup', event => {
+    if (press?.id !== event.pointerId) return;
+    const now = event.timeStamp;
+    const isTap = inCorner(event) && now - press.start <= 600;
+    press = null;
+    if (!isTap) {
+      clearTaps();
+      return;
+    }
+    if (!taps || now - firstTap > 3000) {
+      firstTap = now;
+      taps = 0;
+    }
+    taps += 1;
+    if (taps === 5) {
+      clearTaps();
+      location.assign(new URL('/studio/open', apiBase || location.origin));
+    }
+  }, true);
+}
+
+enableStudioShortcut();
+
 function setStatus(message = '') {
   status.textContent = message;
   status.hidden = !message;
